@@ -5,7 +5,7 @@ on:
     paths:
       - 'namadataset_raw/**'
       - 'preprocessing/automate_Rifdah-siswa.py'
-      - '.github/workflows/preprocess.yml'
+      - '.github/workflows/preprocessing.yml'
 
 jobs:
   preprocess:
