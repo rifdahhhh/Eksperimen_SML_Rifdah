@@ -1,5 +1,7 @@
 import pandas as pd
 import re
+import sys
+import os
 
 def clean_column_names(df):
     """
@@ -25,30 +27,33 @@ def clean_column_names(df):
     return df
 
 def preprocess_data(filepath):
-    """
-    Membaca file CSV dan melakukan preprocessing:
-    - Membersihkan nama kolom
-    - Mengubah label target menjadi numerik
-    - Mengembalikan X (fitur) dan y (label)
-
-    Args:
-        filepath: path ke file CSV
-
-    Returns:
-        Tuple (X, y) siap latih
-    """
     df = pd.read_csv(filepath)
     df = clean_column_names(df)
 
-    # Ubah label target ke biner (misalnya: 'lung_cancer' kolom target, ubah ke 0/1 jika perlu)
     if 'lung_cancer' in df.columns:
         df['lung_cancer'] = df['lung_cancer'].map({'YES': 1, 'NO': 0})
 
-    # Tentukan kolom target dan fitur
     target_column = 'lung_cancer'
     feature_columns = [col for col in df.columns if col != target_column]
 
     X = df[feature_columns]
     y = df[target_column]
 
-    return X, y
+    return X, y, df
+
+if __name__ == "__main__":
+    if len(sys.argv) < 3:
+        print("Usage: python automate_Rifdah-siswa.py <input_csv_path> <output_csv_path>")
+        sys.exit(1)
+
+    input_path = sys.argv[1]
+    output_path = sys.argv[2]
+
+    X, y, df_cleaned = preprocess_data(input_path)
+
+    # Buat folder output jika belum ada
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
+    # Simpan dataframe hasil preprocessing lengkap ke CSV
+    df_cleaned.to_csv(output_path, index=False)
+    print(f"Preprocessing selesai, file disimpan di {output_path}")
