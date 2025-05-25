@@ -4,18 +4,6 @@ import sys
 import os
 
 def clean_column_names(df):
-    """
-    Membersihkan nama kolom:
-    - Menghapus spasi dan tanda hubung, diganti dengan underscore
-    - Mengubah huruf menjadi lowercase
-    - Menghapus karakter non-alfanumerik selain underscore
-
-    Args:
-        df: pandas DataFrame
-
-    Returns:
-        DataFrame dengan nama kolom yang telah dibersihkan
-    """
     cleaned_columns = []
     for col in df.columns:
         cleaned_col = col.strip()
@@ -26,12 +14,36 @@ def clean_column_names(df):
     df.columns = cleaned_columns
     return df
 
+def drop_duplicates(df):
+    return df.drop_duplicates()
+
+def map_gender(df, col_name='gender'):
+    if col_name in df.columns:
+        df[col_name] = df[col_name].map({'M': 0, 'F': 1}).fillna(-1).astype(int)
+    return df
+
+def map_lung_cancer(df, col_name='lung_cancer'):
+    if col_name in df.columns:
+        df[col_name] = df[col_name].map({'YES': 1, 'NO': 0}).fillna(-1).astype(int)
+    return df
+
+def map_binary_columns(df, binary_columns):
+    existing_cols = [col for col in binary_columns if col in df.columns]
+    df[existing_cols] = df[existing_cols].replace({1: 0, 2: 1})
+    return df
+
 def preprocess_data(filepath):
     df = pd.read_csv(filepath)
     df = clean_column_names(df)
+    df = drop_duplicates(df)
+    df = map_gender(df)
+    df = map_lung_cancer(df)
 
-    if 'lung_cancer' in df.columns:
-        df['lung_cancer'] = df['lung_cancer'].map({'YES': 1, 'NO': 0})
+    binary_cols = ['smoking', 'yellow_fingers', 'anxiety', 'peer_pressure',
+                   'chronic_disease', 'fatigue', 'allergy', 'wheezing',
+                   'alcohol_consuming', 'coughing', 'shortness_of_breath',
+                   'swallowing_difficulty', 'chest_pain']
+    df = map_binary_columns(df, binary_cols)
 
     target_column = 'lung_cancer'
     feature_columns = [col for col in df.columns if col != target_column]
