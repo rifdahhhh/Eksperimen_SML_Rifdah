@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
 
     - name: Setup Python
       uses: actions/setup-python@v4
@@ -30,7 +30,7 @@ jobs:
         python preprocessing/automate_Rifdah-siswa.py lung_cancer_raw.csv preprocessing/lung_cancer_clean.csv
 
     - name: Upload preprocessed dataset as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: clean_dataset
         path: preprocessing/lung_cancer_clean.csv
