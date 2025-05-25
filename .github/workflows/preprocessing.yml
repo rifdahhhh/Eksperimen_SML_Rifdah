@@ -27,10 +27,10 @@ jobs:
 
     - name: Run preprocessing script
       run: |
-        python preprocessing/automate_Rifdah-siswa.py lung_cancer_raw.csv lung_cancer_clean.csv
+        python preprocessing/automate_Rifdah-siswa.py lung_cancer_raw.csv preprocessing/lung_cancer_clean.csv
 
     - name: Upload preprocessed dataset as artifact
       uses: actions/upload-artifact@v3
       with:
         name: clean_dataset
-        path: lung_cancer_clean.csv
+        path: preprocessing/lung_cancer_clean.csv
